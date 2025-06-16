@@ -20,9 +20,9 @@ async def test_open_close():
 
     app = OpenDateSelectApp()
     async with app.run_test() as pilot:
-        assert len(app.query(DateSelect)) == 1
-        assert len(app.query(DatePicker)) == 1
-        date_select = app.query_one("DateSelect")
+        assert len(app.screen.query(DateSelect)) == 1
+        assert len(app.screen.query(DatePicker)) == 1
+        date_select = app.screen.query_one("DateSelect")
         assert date_select.date is None
 
         await pilot.press("tab")
@@ -47,7 +47,7 @@ async def test_given_placeholder():
 
     app = OpenDateSelectApp()
     async with app.run_test() as pilot:
-        date_select = app.query_one(DateSelect)
+        date_select = app.screen.query_one(DateSelect)
         assert date_select.date is None
         assert "please select" in date_select.render()
 
@@ -65,7 +65,7 @@ async def test_given_date():
 
     app = OpenDateSelectApp()
     async with app.run_test() as pilot:
-        date_select = app.query_one(DateSelect)
+        date_select = app.screen.query_one(DateSelect)
         assert date_select.date is not None
         assert date_select.date == date
         assert date.format(default_format) in date_select.render()
@@ -84,7 +84,7 @@ async def test_given_format():
 
     app = OpenDateSelectApp()
     async with app.run_test() as pilot:
-        date_select = app.query_one(DateSelect)
+        date_select = app.screen.query_one(DateSelect)
         assert date_select.date is not None
         assert date_select.date == date
         assert date.format(format) in date_select.render()
@@ -104,7 +104,7 @@ async def test_date_selection():
 
     app = OpenDateSelectApp()
     async with app.run_test() as pilot:
-        date_select = app.query_one(DateSelect)
+        date_select = app.screen.query_one(DateSelect)
         assert date_select.date is None
         assert tomorrow_str not in date_select.render()
         assert date_select.dialog.display is False
@@ -136,7 +136,7 @@ async def test_given_this_month_focuses_today():
         await pilot.press("tab")
         await pilot.press("enter")
 
-        assert app.focused == app.query("DatePicker DayLabel.--today").first()
+        assert app.focused == app.screen.query("DatePicker DayLabel.--today").first()
 
 @pytest.mark.asyncio
 async def test_given_last_month_focuses_first():
@@ -175,7 +175,7 @@ async def test_text_cut_for_small_inputs():
 
     app = OpenDateSelectApp()
     async with app.run_test() as pilot:
-        date_select = app.query_one(DateSelect)
+        date_select = app.screen.query_one(DateSelect)
         await pilot.press("tab")
         await pilot.press("enter")
 
@@ -199,7 +199,7 @@ async def test_text_sign_bug():
 
     app = OpenDateSelectApp()
     async with app.run_test() as pilot:
-        date_select = app.query_one(DateSelect)
+        date_select = app.screen.query_one(DateSelect)
         await pilot.press("tab")
         await pilot.press("enter")
 
@@ -217,7 +217,7 @@ async def test_open_click():
     app = OpenDateSelectApp()
 
     async with app.run_test() as pilot:
-        date_select = app.query_one(DateSelect)
+        date_select = app.screen.query_one(DateSelect)
         click = events.Click(sender=date_select, x=0, y=0, screen_x=0, screen_y=0,
                              delta_x=0, delta_y=0, button=1,
                              shift=False, meta=False, ctrl=False)

@@ -20,9 +20,9 @@ async def test_month_control():
     app = MonthControlApp()
 
     async with app.run_test() as pilot:
-        assert len(app.query(DatePicker)) == 1
-        date_picker = app.query_one(DatePicker)
-        month_header = app.query_one("DatePicker MonthHeader")
+        assert len(app.screen.query(DatePicker)) == 1
+        date_picker = app.screen.query_one(DatePicker)
+        month_header = app.screen.query_one("DatePicker MonthHeader")
         current_month = pendulum.today().start_of("month")
         current_month_str = current_month.format(month_header.format)
         assert month_header.renderable == Text(current_month_str)
@@ -30,7 +30,7 @@ async def test_month_control():
 
         assert app.focused is None
         await pilot.press("tab")
-        assert app.focused == app.query("DatePicker MonthControl").first()
+        assert app.focused == app.screen.query("DatePicker MonthControl").first()
         await pilot.press("enter")
 
         last_month = pendulum.today().add(months=-1)
@@ -38,7 +38,7 @@ async def test_month_control():
         assert month_header.renderable == Text(last_month_str)
 
         await pilot.press("tab")
-        assert app.focused == app.query("DatePicker MonthControl").last()
+        assert app.focused == app.screen.query("DatePicker MonthControl").last()
         await pilot.press("enter")
         assert month_header.renderable == Text(current_month_str)
         await pilot.press("enter")
@@ -58,11 +58,11 @@ async def test_month_control_one_year_back():
     app = MonthControlApp()
 
     async with app.run_test() as pilot:
-        month_header = app.query_one("DatePicker MonthHeader")
-        date_picker = app.query_one(DatePicker)
+        month_header = app.screen.query_one("DatePicker MonthHeader")
+        date_picker = app.screen.query_one(DatePicker)
 
         await pilot.press("tab")
-        assert app.focused == app.query("DatePicker MonthControl").first()
+        assert app.focused == app.screen.query("DatePicker MonthControl").first()
         for month in range(1, 13):
             await pilot.press("enter")
 
@@ -82,11 +82,11 @@ async def test_keys_pageup_pagedown_home():
     app = MonthControlApp()
 
     async with app.run_test() as pilot:
-        date_picker = app.query_one(DatePicker)
+        date_picker = app.screen.query_one(DatePicker)
         current_month = pendulum.today().start_of("month")
 
         await pilot.press("tab")
-        assert app.focused == app.query("DatePicker MonthControl").first()
+        assert app.focused == app.screen.query("DatePicker MonthControl").first()
 
         assert date_picker.date == current_month
         await pilot.press("pageup")
@@ -95,7 +95,7 @@ async def test_keys_pageup_pagedown_home():
 
         await pilot.press("tab")
         await pilot.press("tab")
-        assert app.focused == app.query("DatePicker DayLabel.--day").first()
+        assert app.focused == app.screen.query("DatePicker DayLabel.--day").first()
         await pilot.press("pageup")
         assert date_picker.date == pendulum.today(
             tz="UTC").start_of("month").add(months=-2)
@@ -111,7 +111,7 @@ async def test_keys_pageup_pagedown_home():
 
         await pilot.press("home")
         assert date_picker.date == pendulum.today()
-        assert app.focused == app.query("DatePicker DayLabel.--today").first()
+        assert app.focused == app.screen.query("DatePicker DayLabel.--today").first()
 
 
 @pytest.mark.asyncio
@@ -124,8 +124,8 @@ async def test_keys_up_down_left_right():
     app = MonthControlApp()
 
     async with app.run_test() as pilot:
-        date_picker = app.query_one(DatePicker)
-        month_header = app.query_one("DatePicker MonthHeader")
+        date_picker = app.screen.query_one(DatePicker)
+        month_header = app.screen.query_one("DatePicker MonthHeader")
 
         aug22 = pendulum.datetime(2022, 8, 1, 0, 0, 0)
         date_picker.date = aug22
@@ -134,7 +134,7 @@ async def test_keys_up_down_left_right():
         assert date_picker.date == aug22
 
         await pilot.press("tab")
-        assert app.focused == app.query("DatePicker MonthControl").first()
+        assert app.focused == app.screen.query("DatePicker MonthControl").first()
 
         assert date_picker.date == aug22
         await pilot.press("up")
@@ -145,7 +145,7 @@ async def test_keys_up_down_left_right():
 
         await pilot.press("tab")
         await pilot.press("tab")
-        assert app.focused == app.query("DatePicker DayLabel.--day").first()
+        assert app.focused == app.screen.query("DatePicker DayLabel.--day").first()
         assert app.focused.day == 1
 
         # navigate within month
@@ -233,8 +233,8 @@ async def test_down_nudging_by_index_error():
     app = MonthControlApp()
 
     async with app.run_test() as pilot:
-        date_picker = app.query_one(DatePicker)
-        month_header = app.query_one("DatePicker MonthHeader")
+        date_picker = app.screen.query_one(DatePicker)
+        month_header = app.screnn.query_one("DatePicker MonthHeader")
 
         # a month with a day on the last line
         oct22 = pendulum.datetime(2022, 10, 1, 0, 0, 0)
@@ -276,8 +276,8 @@ async def test_month_with_only_five_rows():
     app = MonthControlApp()
 
     async with app.run_test() as pilot:
-        date_picker = app.query_one(DatePicker)
-        month_header = app.query_one("DatePicker MonthHeader")
+        date_picker = app.screen.query_one(DatePicker)
+        month_header = app.screen.query_one("DatePicker MonthHeader")
 
         # a month with five rows
         feb23 = pendulum.datetime(2023, 2, 1, 0, 0, 0)
@@ -299,8 +299,8 @@ async def test_day_click():
     app = MonthControlApp()
 
     async with app.run_test() as pilot:
-        first_day_label = app.query("DatePicker DayLabel").first()
-        first_day = app.query("DatePicker DayLabel.--day").first()
+        first_day_label = app.screen.query("DatePicker DayLabel").first()
+        first_day = app.screen.query("DatePicker DayLabel.--day").first()
         click = events.Click(sender=first_day, x=0, y=0, screen_x=0, screen_y=0,
                              delta_x=0, delta_y=0, button=1,
                              shift=False, meta=False, ctrl=False)

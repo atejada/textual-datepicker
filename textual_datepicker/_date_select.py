@@ -122,7 +122,7 @@ class DateSelect(Widget, can_focus=True):
         if self.dialog is None:
             self.dialog = DatePickerDialog()
             self.dialog.target = self
-            self.app.query_one(self.picker_mount).mount(self.dialog)
+            self.app.screen.query_one(self.picker_mount).mount(self.dialog)
 
     def on_key(self, event: events.Key) -> None:
         if event.key == "enter":
@@ -138,7 +138,7 @@ class DateSelect(Widget, can_focus=True):
         self.date = event.date
 
     def _show_date_picker(self) -> None:
-        mnt_widget = self.app.query_one(self.picker_mount)
+        mnt_widget = self.app.screen.query_one(self.picker_mount)
         self.dialog.display = True
 
         # calculate offset of DateSelect and apply it to DatePickerDialog
